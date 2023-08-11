@@ -9,9 +9,9 @@ import { Image, Button, Grid, Card, Text, Container } from '@nextui-org/react'
 import confetti from 'canvas-confetti'
 
 import { CustomLayout } from '@/components/layouts'
-import { pokeApi } from '../../api'
 import { PokemonDetails } from '@/interfaces'
 import { getPokemonInfo, inFavorites, toggleFavorite } from '../../utils'
+import { PokemonStats } from '@/containers/stats/pokemonStatsContainer'
 
 
 
@@ -21,7 +21,7 @@ interface PokeProps {
 }
 
 const PokemonPage: NextPage<PokeProps> = ({ pokemon }) => {
-  const { name, sprites } = pokemon
+  const { name, sprites, stats } = pokemon
 
   const [isInFavorites, setIsInFavorites] = useState(false);
 
@@ -64,19 +64,20 @@ const PokemonPage: NextPage<PokeProps> = ({ pokemon }) => {
         <Grid xs={12} sm={8}>
           <Card>
             <Card.Header css={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Text h1 transform='capitalize'>{pokemon.name}</Text>
+              <Text h1 transform='capitalize' >{pokemon.name}</Text>
 
               <Button
-                color="gradient"
+                ghost={!isInFavorites}
+                color="primary"
                 onPress={onToggleFavorite}
-                ghost={isInFavorites}
               >
                 {isInFavorites ? 'Quitar de favoritos' : 'Agregar a favoritos'}
               </Button>
+
             </Card.Header>
 
             <Card.Body>
-              <Text size={30}>Sprites:</Text>
+              <Text size={30}>Sprites</Text>
 
               <Container direction='row' display='flex' gap={0}>
                 <Image
@@ -112,6 +113,8 @@ const PokemonPage: NextPage<PokeProps> = ({ pokemon }) => {
 
           </Card>
         </Grid>
+        <PokemonStats statsDetails={pokemon} />
+
 
       </Grid.Container>
     </CustomLayout>
@@ -128,9 +131,9 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
   return {
     paths: pokemonList.map(id => ({
       params: { id }
-      // false or "blocking"
     })),
-    fallback: false,
+    // false or "blocking", si es false, si no encuentra la ruta, muestra 404, si es blocking, espera a que se genere la ruta hay que validar que exista la ruta en el getStaticProps
+    fallback: 'blocking',
   }
 }
 
@@ -144,11 +147,24 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   //indicamos que el id es un string
   const { id } = ctx.params as { id: string }
 
+  const pokemon = await getPokemonInfo(id)
+
+  // Si no encuentra el pokemon, redireccionamos al usuario al home
+  if (!pokemon) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      }
+    }
+  }
+
   //retornamos los props que necesitamos enviandola a la pagina
   return {
     props: {
-      pokemon: await getPokemonInfo(id)
-    }
+      pokemon
+    },
+    revalidate: 86400, //24 horas porque se le pasa el tiempo en segundos
   }
 }
 

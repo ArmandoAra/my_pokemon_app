@@ -9,19 +9,10 @@ import { PokemonCard } from '@/components/pokemon';
 
 import { FavoritesPokemons } from '../../components/favPokemons/favoritesPokemons';
 
-
-
-
-
-
 export default function Favoritos() {
 
-    //Creamos un estado para guardar los favoritos
     const [favoritesPokemons, setFavoritesPokemons] = useState<number[]>([])
 
-
-    // Necesito leer el arreglo de pokemons favoritos del localstorage
-    // para eso necesito usar el useEffect que se ejecuta cuando el componente se monta
     useEffect(() => {
         setFavoritesPokemons(favPokemons())
     }, [])

@@ -1,15 +1,23 @@
 import { pokeApi } from "@/api"
 import { PokemonDetails } from "@/interfaces"
-
+import { DescriptionData } from "@/interfaces"
 
 export const getPokemonInfo = async (nameOrId: string) => {
 
-    const { data } = await pokeApi.get<PokemonDetails>(`/pokemon/${nameOrId}`)
+    try {
+        const { data } = await pokeApi.get<PokemonDetails>(`/pokemon/${nameOrId}`)
+        const descriptionData = await pokeApi.get<DescriptionData>(`/pokemon-species/${nameOrId}`)
 
-    //Voy a enviar solo los datos que necesito
-    return {
-        id: data.id,
-        name: data.name,
-        sprites: data.sprites,
+        return {
+            id: data.id,
+            name: data.name,
+            sprites: data.sprites,
+            stats: data.stats,
+            description: descriptionData.data.flavor_text_entries[1].flavor_text,
+        }
     }
+    catch (error) {
+        return null
+    }
+
 }

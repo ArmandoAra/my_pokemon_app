@@ -2,9 +2,7 @@
 
 import { NextPage } from "next"
 import { GetStaticProps } from "next/types";
-import { Image } from '@nextui-org/react'
 
-import { Button } from '@nextui-org/react';
 import { Grid } from '@nextui-org/react'
 
 import { CustomLayout } from '../components/layouts'
@@ -12,7 +10,7 @@ import { PokemonCard } from '../components/pokemon'
 import { pokeApi } from "../api";
 import { PokemonResponse, PokemonData } from "../interfaces";
 import { CSSProperties } from "@nextui-org/react/types/theme";
-import { inFavorites } from '../utils/localFavorites';
+
 
 
 // styles

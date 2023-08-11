@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 
-import { useRouter } from 'next/router'
 import { NextPage } from "next"
 import { GetStaticPaths } from 'next'
 import { GetStaticProps } from 'next/types'
@@ -8,13 +7,12 @@ import { Image, Button, Grid, Card, Text, Container } from '@nextui-org/react'
 
 import confetti from 'canvas-confetti'
 
-import { CustomLayout } from '@/components/layouts'
 import { pokeApi } from '../../api'
-import { PokemonDetails } from '@/interfaces'
 import { getPokemonInfo, inFavorites, toggleFavorite } from '../../utils'
+import { CustomLayout } from '@/components/layouts'
+import { PokemonDetails } from '@/interfaces'
 
-
-
+import { PokemonStats } from '@/containers/stats/pokemonStatsContainer'
 
 interface PokeProps {
     pokemon: PokemonDetails,
@@ -67,9 +65,9 @@ const PokemonByNamePage: NextPage<PokeProps> = ({ pokemon }) => {
                             <Text h1 transform='capitalize'>{pokemon.name}</Text>
 
                             <Button
-                                color="gradient"
+                                color="primary"
                                 onPress={onToggleFavorite}
-                                ghost={isInFavorites}
+                                ghost={!isInFavorites}
                             >
                                 {isInFavorites ? 'Quitar de favoritos' : 'Agregar a favoritos'}
                             </Button>
@@ -109,9 +107,25 @@ const PokemonByNamePage: NextPage<PokeProps> = ({ pokemon }) => {
 
                         </Card.Body>
 
-
                     </Card>
                 </Grid>
+                <Container direction='row' display='flex' gap={0}>
+
+                    {/* Pokemon Stats */}
+                    <PokemonStats statsDetails={pokemon} />
+
+                    {/* Pokemon description */}
+                    <Grid xs={12} sm={8}>
+                        <Card>
+                            <Card.Header display={'flex'} css={{ 'align-items': 'center', 'justify-content': 'center' }}>
+                                <Text h3 >Description</Text>
+                            </Card.Header>
+                            <Card.Body>
+                                <Text h4>{pokemon.description}</Text>
+                            </Card.Body>
+                        </Card>
+                    </Grid>
+                </Container>
 
             </Grid.Container>
         </CustomLayout>
@@ -130,7 +144,7 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
         paths: pokemonNames.map(name => ({
             params: { name }
         })),
-        fallback: false,
+        fallback: 'blocking',
     }
 }
 
@@ -140,9 +154,20 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
 
     const { name } = ctx.params as { name: string }
 
+    const pokemon = await getPokemonInfo(name)
+
+    if (!pokemon) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false,
+            }
+        }
+    }
+
     return {
         props: {
-            pokemon: await getPokemonInfo(name)
+            pokemon
         }
     }
 }

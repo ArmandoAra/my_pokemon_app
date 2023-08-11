@@ -18,6 +18,7 @@ export interface PokemonDetails {
     stats: Stat[];
     types: Type[];
     results: Species[];
+    description: string;
 }
 
 export interface Ability {
