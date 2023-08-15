@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 
-import { useRouter } from 'next/router'
 import { NextPage } from "next"
 import { GetStaticPaths } from 'next'
 import { GetStaticProps } from 'next/types'
@@ -12,8 +11,7 @@ import { CustomLayout } from '@/components/layouts'
 import { PokemonDetails } from '@/interfaces'
 import { getPokemonInfo, inFavorites, toggleFavorite } from '../../utils'
 import { PokemonStats } from '@/containers/stats/pokemonStatsContainer'
-
-
+import { PokemonDescription } from '../../components/description/pokemonDescription'
 
 
 interface PokeProps {
@@ -21,7 +19,7 @@ interface PokeProps {
 }
 
 const PokemonPage: NextPage<PokeProps> = ({ pokemon }) => {
-  const { name, sprites, stats } = pokemon
+  const { name } = pokemon
 
   const [isInFavorites, setIsInFavorites] = useState(false);
 
@@ -52,7 +50,7 @@ const PokemonPage: NextPage<PokeProps> = ({ pokemon }) => {
           <Card isHoverable css={{ padding: '30px' }}>
             <Card.Body>
               <Card.Image
-                src={pokemon.sprites.other?.dream_world.front_default || '/no-image.png'}
+                src={pokemon.sprites.other?.['official-artwork'].front_default || '/no-image.png'}
                 alt={name}
                 width="100%"
                 height={200}
@@ -76,8 +74,9 @@ const PokemonPage: NextPage<PokeProps> = ({ pokemon }) => {
 
             </Card.Header>
 
+            {/* ############################################ Refactotizar #############################################*/}
             <Card.Body>
-              <Text size={30}>Sprites</Text>
+              <Text size={30}>Sprites:</Text>
 
               <Container direction='row' display='flex' gap={0}>
                 <Image
@@ -86,24 +85,31 @@ const PokemonPage: NextPage<PokeProps> = ({ pokemon }) => {
                   width={100}
                   height={100}
                 />
-                <Image
-                  src={pokemon.sprites.back_default}
-                  alt={pokemon.name}
-                  width={100}
-                  height={100}
-                />
-                <Image
-                  src={pokemon.sprites.front_shiny}
-                  alt={pokemon.name}
-                  width={100}
-                  height={100}
-                />
-                <Image
-                  src={pokemon.sprites.back_shiny}
-                  alt={pokemon.name}
-                  width={100}
-                  height={100}
-                />
+                {pokemon.sprites.back_default ?
+                  <Image
+                    src={pokemon.sprites.back_default}
+                    alt={pokemon.name}
+                    width={100}
+                    height={100}
+                  /> : null
+                }
+                {pokemon.sprites.front_shiny ?
+                  <Image
+                    src={pokemon.sprites.front_shiny}
+                    alt={pokemon.name}
+                    width={100}
+                    height={100}
+                  /> : null
+                }
+                {pokemon.sprites.back_shiny ?
+                  <Image
+                    src={pokemon.sprites.back_shiny}
+                    alt={pokemon.name}
+                    width={100}
+                    height={100}
+                  /> : null
+                }
+
 
               </Container>
 
@@ -113,43 +119,42 @@ const PokemonPage: NextPage<PokeProps> = ({ pokemon }) => {
 
           </Card>
         </Grid>
-        <PokemonStats statsDetails={pokemon} />
 
+        <Container direction='row' display='flex' gap={0}>
+
+          {/* Pokemon stats */}
+          <PokemonStats statsDetails={pokemon} />
+
+          {/* Pokemon description */}
+          <PokemonDescription description={pokemon.description} />
+
+        </Container>
 
       </Grid.Container>
     </CustomLayout>
   )
 }
 
-// getStaticPaths es para generar las rutas estaticas, los paths que se escriben en el navegador
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
 
-  // hacemos un array con numeros del 1 al 151 en string
   const pokemonList = [...Array(151)].map((value, index) => `${index + 1}`)
 
-  // const paths = data.results.map((pokemon) => ({
   return {
     paths: pokemonList.map(id => ({
       params: { id }
     })),
-    // false or "blocking", si es false, si no encuentra la ruta, muestra 404, si es blocking, espera a que se genere la ruta hay que validar que exista la ruta en el getStaticProps
+
     fallback: 'blocking',
   }
 }
 
 
-// En el getSaticProps despues que se ejecuta el getStaticPaths recibimos los parametros de los paths
-// Necesitamos los argumentos de la url para hacer la peticion a la api,que viene en el ctx(conexto)
-// Es importante enviar la data que vamos a usar y no mas, para que la pagina se renderice mas rapido
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  //Podiamos tambien desestructurar el ctx y sacar el id ({ params })
 
-  //indicamos que el id es un string
   const { id } = ctx.params as { id: string }
 
   const pokemon = await getPokemonInfo(id)
 
-  // Si no encuentra el pokemon, redireccionamos al usuario al home
   if (!pokemon) {
     return {
       redirect: {
@@ -159,12 +164,12 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     }
   }
 
-  //retornamos los props que necesitamos enviandola a la pagina
+
   return {
     props: {
       pokemon
     },
-    revalidate: 86400, //24 horas porque se le pasa el tiempo en segundos
+    revalidate: 86400,
   }
 }
 

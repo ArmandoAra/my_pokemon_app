@@ -25,7 +25,7 @@ export const CustomLayout = ({ children, title }: MainLayoutProps) => {
         <meta property="og:description" content="Get from SEO newbie to SEO pro in 8 simple steps." />
         {/* usamos el origin para la ruta que vamos a poner en el contenido y la imagen que mostraremos en el enlace cuando enviemos el link aparezca */}
         <meta property="og:image" content="https://ahrefs.com/blog/wp-content/uploads/2019/12/fb-how-to-become-an-seo-expert.png" />
-        <link href="../../dist/output.css" rel="stylesheet" />
+
       </Head>
       {/* Navbar */}
       <Navbar />

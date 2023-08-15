@@ -13,6 +13,7 @@ import { CustomLayout } from '@/components/layouts'
 import { PokemonDetails } from '@/interfaces'
 
 import { PokemonStats } from '@/containers/stats/pokemonStatsContainer'
+import { PokemonDescription } from '../../components/description/pokemonDescription'
 
 interface PokeProps {
     pokemon: PokemonDetails,
@@ -50,7 +51,7 @@ const PokemonByNamePage: NextPage<PokeProps> = ({ pokemon }) => {
                     <Card isHoverable css={{ padding: '30px' }}>
                         <Card.Body>
                             <Card.Image
-                                src={pokemon.sprites.other?.dream_world.front_default || '/no-image.png'}
+                                src={pokemon.sprites.other?.['official-artwork'].front_default || '/no-image.png'}
                                 alt={name}
                                 width="100%"
                                 height={200}
@@ -73,6 +74,8 @@ const PokemonByNamePage: NextPage<PokeProps> = ({ pokemon }) => {
                             </Button>
                         </Card.Header>
 
+
+                        {/* ############################################ Refactotizar #############################################*/}
                         <Card.Body>
                             <Text size={30}>Sprites:</Text>
 
@@ -83,24 +86,31 @@ const PokemonByNamePage: NextPage<PokeProps> = ({ pokemon }) => {
                                     width={100}
                                     height={100}
                                 />
-                                <Image
-                                    src={pokemon.sprites.back_default}
-                                    alt={pokemon.name}
-                                    width={100}
-                                    height={100}
-                                />
-                                <Image
-                                    src={pokemon.sprites.front_shiny}
-                                    alt={pokemon.name}
-                                    width={100}
-                                    height={100}
-                                />
-                                <Image
-                                    src={pokemon.sprites.back_shiny}
-                                    alt={pokemon.name}
-                                    width={100}
-                                    height={100}
-                                />
+                                {pokemon.sprites.back_default ?
+                                    <Image
+                                        src={pokemon.sprites.back_default}
+                                        alt={pokemon.name}
+                                        width={100}
+                                        height={100}
+                                    /> : null
+                                }
+                                {pokemon.sprites.front_shiny ?
+                                    <Image
+                                        src={pokemon.sprites.front_shiny}
+                                        alt={pokemon.name}
+                                        width={100}
+                                        height={100}
+                                    /> : null
+                                }
+                                {pokemon.sprites.back_shiny ?
+                                    <Image
+                                        src={pokemon.sprites.back_shiny}
+                                        alt={pokemon.name}
+                                        width={100}
+                                        height={100}
+                                    /> : null
+                                }
+
 
                             </Container>
 
@@ -109,22 +119,15 @@ const PokemonByNamePage: NextPage<PokeProps> = ({ pokemon }) => {
 
                     </Card>
                 </Grid>
+
+
                 <Container direction='row' display='flex' gap={0}>
 
                     {/* Pokemon Stats */}
                     <PokemonStats statsDetails={pokemon} />
 
                     {/* Pokemon description */}
-                    <Grid xs={12} sm={8}>
-                        <Card>
-                            <Card.Header display={'flex'} css={{ 'align-items': 'center', 'justify-content': 'center' }}>
-                                <Text h3 >Description</Text>
-                            </Card.Header>
-                            <Card.Body>
-                                <Text h4>{pokemon.description}</Text>
-                            </Card.Body>
-                        </Card>
-                    </Grid>
+                    <PokemonDescription description={pokemon.description} />
                 </Container>
 
             </Grid.Container>
@@ -135,13 +138,13 @@ const PokemonByNamePage: NextPage<PokeProps> = ({ pokemon }) => {
 
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
 
-    const { data } = await pokeApi.get<PokemonDetails>(`https://pokeapi.co/api/v2/pokemon?limit=151`)
+    const { data } = await pokeApi.get<PokemonDetails>(`https://pokeapi.co/api/v2/pokemon?limit=1200`)
     const pokemonNames = data.results.map(pokemon => pokemon.name)
+    const filteredStrings = pokemonNames.filter(string => !string.includes('-'));
 
-    // const pokemonList = [...Array(data.results)].map((value, index) => value.map(value => value.name))
 
     return {
-        paths: pokemonNames.map(name => ({
+        paths: filteredStrings.map(name => ({
             params: { name }
         })),
         fallback: 'blocking',
@@ -155,6 +158,7 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     const { name } = ctx.params as { name: string }
 
     const pokemon = await getPokemonInfo(name)
+
 
     if (!pokemon) {
         return {

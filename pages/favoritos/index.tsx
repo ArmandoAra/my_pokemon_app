@@ -4,8 +4,6 @@ import { CustomLayout } from '../../components/layouts'
 import { NoFavorites } from '@/components/ui'
 
 import { favPokemons } from '../../utils/localFavorites'
-import { PokemonCard } from '@/components/pokemon';
-
 
 import { FavoritesPokemons } from '../../components/favPokemons/favoritesPokemons';
 

@@ -28,6 +28,39 @@ export interface DescriptionData {
     varieties: Variety[];
 }
 
+export interface GenerationList {
+    pokemon_species: MainRegion[];
+    sprite: string[];
+}
+
+
+export interface MainRegion {
+    name: string;
+    url: string;
+}
+
+export interface Name {
+    language: MainRegion;
+    name: string;
+}
+
+export interface Sprite {
+    image: string;
+}
+
+
+export interface GenerationsCards {
+    count: number;
+    next: string;
+    previous: string;
+    results: Results[];
+}
+
+export interface Results {
+    name: string;
+    url: string;
+}
+
 export interface Color {
     name: string;
     url: string;

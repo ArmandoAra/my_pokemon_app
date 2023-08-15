@@ -21,6 +21,8 @@ export interface PokemonDetails {
     description: string;
 }
 
+
+
 export interface Ability {
     ability: Species;
     is_hidden: boolean;
