@@ -1,25 +1,28 @@
 import { useState, useEffect } from 'react'
+import { Image, Button, Grid, Card, Text, Container } from '@nextui-org/react'
 
 import { NextPage } from "next"
 import { GetStaticPaths } from 'next'
 import { GetStaticProps } from 'next/types'
-import { Image, Button, Grid, Card, Text, Container } from '@nextui-org/react'
 
 import confetti from 'canvas-confetti'
 
 import { CustomLayout } from '@/components/layouts'
-import { PokemonDetails } from '@/interfaces'
-import { getPokemonInfo, inFavorites, toggleFavorite } from '../../utils'
 import { PokemonStats } from '@/containers/stats/pokemonStatsContainer'
 import { PokemonDescription } from '../../components/description/pokemonDescription'
+import { PokemonSpritesContainer } from '@/containers/sprites/pokemonSpritesContainer'
 
+import { PokemonDetails } from '@/interfaces'
+import { getPokemonInfo, inFavorites, toggleFavorite } from '../../utils'
+import { PokemonImage } from '@/components/pokemonImage/image'
 
 interface PokeProps {
   pokemon: PokemonDetails,
 }
 
 const PokemonPage: NextPage<PokeProps> = ({ pokemon }) => {
-  const { name } = pokemon
+
+  const { name, sprites } = pokemon
 
   const [isInFavorites, setIsInFavorites] = useState(false);
 
@@ -46,23 +49,13 @@ const PokemonPage: NextPage<PokeProps> = ({ pokemon }) => {
   return (
     <CustomLayout title={name} >
       <Grid.Container css={{ marginTop: '5px' }} gap={2}>
-        <Grid xs={12} sm={4} >
-          <Card isHoverable css={{ padding: '30px' }}>
-            <Card.Body>
-              <Card.Image
-                src={pokemon.sprites.other?.['official-artwork'].front_default || '/no-image.png'}
-                alt={name}
-                width="100%"
-                height={200}
-              />
-            </Card.Body>
-          </Card>
-        </Grid>
+
+        <PokemonImage name={name} sprites={sprites} />
 
         <Grid xs={12} sm={8}>
           <Card>
             <Card.Header css={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Text h1 transform='capitalize' >{pokemon.name}</Text>
+              <Text h1 transform='capitalize' >{name}</Text>
 
               <Button
                 ghost={!isInFavorites}
@@ -74,48 +67,7 @@ const PokemonPage: NextPage<PokeProps> = ({ pokemon }) => {
 
             </Card.Header>
 
-            {/* ############################################ Refactotizar #############################################*/}
-            <Card.Body>
-              <Text size={30}>Sprites:</Text>
-
-              <Container direction='row' display='flex' gap={0}>
-                <Image
-                  src={pokemon.sprites.front_default}
-                  alt={pokemon.name}
-                  width={100}
-                  height={100}
-                />
-                {pokemon.sprites.back_default ?
-                  <Image
-                    src={pokemon.sprites.back_default}
-                    alt={pokemon.name}
-                    width={100}
-                    height={100}
-                  /> : null
-                }
-                {pokemon.sprites.front_shiny ?
-                  <Image
-                    src={pokemon.sprites.front_shiny}
-                    alt={pokemon.name}
-                    width={100}
-                    height={100}
-                  /> : null
-                }
-                {pokemon.sprites.back_shiny ?
-                  <Image
-                    src={pokemon.sprites.back_shiny}
-                    alt={pokemon.name}
-                    width={100}
-                    height={100}
-                  /> : null
-                }
-
-
-              </Container>
-
-
-            </Card.Body>
-
+            <PokemonSpritesContainer pokemon={pokemon} />
 
           </Card>
         </Grid>

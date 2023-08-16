@@ -7,7 +7,8 @@ import { Grid } from '@nextui-org/react'
 import { CustomLayout } from '@/components/layouts'
 import { GenerationList } from '@/interfaces'
 import { getPokemons } from '@/utils/getPokemons'
-import { Species } from '../../interfaces/pokemon-full-data';
+import { Species } from '../../interfaces/pokemon-full-data'
+import { MainRegion } from "@/interfaces"
 import { PokemonCard } from '@/components/pokemon'
 
 interface GenProps {
@@ -16,6 +17,7 @@ interface GenProps {
 
 const PokemonByGenerationPage: NextPage<GenProps> = ({ pokemons }) => {
     const { pokemon_species, sprite } = pokemons
+
 
     return (
         <CustomLayout title="Listado de Pokemones" >
@@ -51,6 +53,8 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
     }
 }
 
+
+// Ordenar pokemons-species para mandar al componente
 export const getStaticProps: GetStaticProps = async (ctx) => {
 
     const { number } = ctx.params as { number: string }

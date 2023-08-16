@@ -8,12 +8,17 @@ interface PokeProps {
   statsDetails: PokemonDetails,
 }
 
+//styles
+const cardBody = {
+  'align-items': 'center',
+}
+
 export const PokemonStats = ({ statsDetails }: PokeProps) => {
 
   return (
     <Grid xs={12} sm={4}>
       <Card>
-        <Card.Body direction='column' display='flex' gap={0} css={{ 'align-items': 'center' }}>
+        <Card.Body direction='column' display='flex' gap={0} css={cardBody}>
           <Text size={30}>Stats</Text>
           <Stats pokemons={statsDetails} />
         </Card.Body>

@@ -1,11 +1,54 @@
-import React from 'react'
+import { Image, Card, Text, Container } from '@nextui-org/react'
 
-interface SpriteProps {
-    children: React.ReactNode
+import { PokemonDetails } from '@/interfaces'
+
+
+interface PokeProps {
+    pokemon: PokemonDetails,
 }
 
-export const PokemonSpritesContainer = ({ children }: SpriteProps) => {
+export const PokemonSpritesContainer = ({ pokemon }: PokeProps) => {
     return (
-        <div>{children}</div>
+        <Card.Body>
+            <Text size={30}>Sprites:</Text>
+
+            <Container direction='row' display='flex' gap={0}>
+                <Image
+                    src={pokemon.sprites.front_default}
+                    alt={pokemon.name}
+                    width={100}
+                    height={100}
+                />
+                {pokemon.sprites.back_default ?
+                    <Image
+                        src={pokemon.sprites.back_default}
+                        alt={pokemon.name}
+                        width={100}
+                        height={100}
+                    /> : null
+                }
+                {pokemon.sprites.front_shiny ?
+                    <Image
+                        src={pokemon.sprites.front_shiny}
+                        alt={pokemon.name}
+                        width={100}
+                        height={100}
+                    /> : null
+                }
+                {pokemon.sprites.back_shiny ?
+                    <Image
+                        src={pokemon.sprites.back_shiny}
+                        alt={pokemon.name}
+                        width={100}
+                        height={100}
+                    /> : null
+                }
+
+
+            </Container>
+
+
+        </Card.Body>
+
     )
 }

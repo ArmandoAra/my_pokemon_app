@@ -13,14 +13,16 @@ import { CustomLayout } from '@/components/layouts'
 import { PokemonDetails } from '@/interfaces'
 
 import { PokemonStats } from '@/containers/stats/pokemonStatsContainer'
+import { PokemonSpritesContainer } from '@/containers/sprites/pokemonSpritesContainer'
 import { PokemonDescription } from '../../components/description/pokemonDescription'
+import { PokemonImage } from '@/components/pokemonImage/image'
 
 interface PokeProps {
     pokemon: PokemonDetails,
 }
 
 const PokemonByNamePage: NextPage<PokeProps> = ({ pokemon }) => {
-    const { name } = pokemon
+    const { name, sprites } = pokemon
 
     const [isInFavorites, setIsInFavorites] = useState(false);
 
@@ -41,29 +43,21 @@ const PokemonByNamePage: NextPage<PokeProps> = ({ pokemon }) => {
                 origin: { x: 0.5, y: 0.02 },
             });
         }
+
     };
 
 
     return (
         <CustomLayout title={name} >
+
             <Grid.Container css={{ marginTop: '5px' }} gap={2}>
-                <Grid xs={12} sm={4} >
-                    <Card isHoverable css={{ padding: '30px' }}>
-                        <Card.Body>
-                            <Card.Image
-                                src={pokemon.sprites.other?.['official-artwork'].front_default || '/no-image.png'}
-                                alt={name}
-                                width="100%"
-                                height={200}
-                            />
-                        </Card.Body>
-                    </Card>
-                </Grid>
+
+                <PokemonImage name={name} sprites={sprites} />
 
                 <Grid xs={12} sm={8}>
                     <Card>
                         <Card.Header css={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <Text h1 transform='capitalize'>{pokemon.name}</Text>
+                            <Text h1 transform='capitalize'>{name}</Text>
 
                             <Button
                                 color="primary"
@@ -74,48 +68,7 @@ const PokemonByNamePage: NextPage<PokeProps> = ({ pokemon }) => {
                             </Button>
                         </Card.Header>
 
-
-                        {/* ############################################ Refactotizar #############################################*/}
-                        <Card.Body>
-                            <Text size={30}>Sprites:</Text>
-
-                            <Container direction='row' display='flex' gap={0}>
-                                <Image
-                                    src={pokemon.sprites.front_default}
-                                    alt={pokemon.name}
-                                    width={100}
-                                    height={100}
-                                />
-                                {pokemon.sprites.back_default ?
-                                    <Image
-                                        src={pokemon.sprites.back_default}
-                                        alt={pokemon.name}
-                                        width={100}
-                                        height={100}
-                                    /> : null
-                                }
-                                {pokemon.sprites.front_shiny ?
-                                    <Image
-                                        src={pokemon.sprites.front_shiny}
-                                        alt={pokemon.name}
-                                        width={100}
-                                        height={100}
-                                    /> : null
-                                }
-                                {pokemon.sprites.back_shiny ?
-                                    <Image
-                                        src={pokemon.sprites.back_shiny}
-                                        alt={pokemon.name}
-                                        width={100}
-                                        height={100}
-                                    /> : null
-                                }
-
-
-                            </Container>
-
-
-                        </Card.Body>
+                        <PokemonSpritesContainer pokemon={pokemon} />
 
                     </Card>
                 </Grid>
@@ -131,6 +84,7 @@ const PokemonByNamePage: NextPage<PokeProps> = ({ pokemon }) => {
                 </Container>
 
             </Grid.Container>
+
         </CustomLayout>
     )
 }

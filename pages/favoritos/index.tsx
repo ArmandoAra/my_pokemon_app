@@ -2,17 +2,16 @@ import { useState, useEffect } from 'react';
 
 import { CustomLayout } from '../../components/layouts'
 import { NoFavorites } from '@/components/ui'
-
-import { favPokemons } from '../../utils/localFavorites'
-
 import { FavoritesPokemons } from '../../components/favPokemons/favoritesPokemons';
+
+import { getFavPokemonsInLocalStore } from '../../utils/localFavorites'
 
 export default function Favoritos() {
 
     const [favoritesPokemons, setFavoritesPokemons] = useState<number[]>([])
 
     useEffect(() => {
-        setFavoritesPokemons(favPokemons())
+        setFavoritesPokemons(getFavPokemonsInLocalStore())
     }, [])
 
     return (

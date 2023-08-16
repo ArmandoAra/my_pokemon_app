@@ -6,7 +6,6 @@ export const toggleFavorite = (id: number) => {
     if (favorites.includes(id)) {
         favorites = favorites.filter((favo) => favo !== id)
     } else {
-
         favorites.push(id)
     }
 
@@ -19,7 +18,7 @@ export const inFavorites = (id: number): boolean => {
     return favorites.includes(id);
 }
 
-export const favPokemons = (): number[] => {
+export const getFavPokemonsInLocalStore = (): number[] => {
     return JSON.parse(localStorage.getItem('favorites') || '[]');;
 }
 

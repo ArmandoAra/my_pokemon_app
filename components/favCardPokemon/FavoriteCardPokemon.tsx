@@ -19,7 +19,7 @@ export const FavoriteCardPokemon = ({ pokemonId }: favoriteCardPokemonProps) => 
             <Card
                 isHoverable
                 isPressable
-                onClick={handleClick}
+                onPress={handleClick}
                 css={{
                     height: '100%',
                     display: 'flex',
